@@ -1,0 +1,12 @@
+" C formatting
+set expandtab shiftwidth=4 tabstop=4
+set autoindent smartindent
+
+" Makefile formatting, etc.
+filetype plugin on
+
+" write file before :make
+set autowrite
+
+" better filename completion
+set wildmode=longest:list,full

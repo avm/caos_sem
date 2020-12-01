@@ -1,13 +1,6 @@
-#include <stdlib.h>
+#include "strings.h"
+
 #include <string.h>
-#include <stdio.h>
-
-struct String {
-    char* data;
-    size_t length;
-    size_t capacity;
-};
-
 
 void string_init(struct String* string, const char* initial) {
     size_t len = strlen(initial) + 1;
@@ -41,27 +34,4 @@ void string_append(struct String* string, int c) {
     ++string->length;
     string->data[string->length - 2] = c;
     string->data[string->length - 1] = '\0';
-}
-
-
-int main(void) {
-    // hello\n -> olleh\n
-    struct String string;
-    string_init(&string, "");
-    int ch;
-    do {
-        ch = getchar();
-        if (ch == EOF || ch == '\n') {
-            for (int i = string.length - 2; i > -1; --i) {
-                putchar(string.data[i]);
-            }
-            putchar('\n');
-            string.data[0] = '\0';
-            string.length = 1;
-        } else {
-            string_append(&string, ch);
-        }
-    } while (ch != EOF);
-    string_free(&string);
-    return 0;
 }

@@ -1,4 +1,12 @@
 CFLAGS=-Wall -Werror
+LDFLAGS=-lm
 
 
-all: strings
+all: rev
+
+
+rev: strings.o
+
+
+clean:
+	rm -f *.o rev

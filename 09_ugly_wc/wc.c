@@ -24,7 +24,7 @@ void process_bytes(struct State* state, unsigned char byte) {
 
 int is_letter(unsigned codepoint) {
     return (codepoint >= 'a' && codepoint <= 'z') ||
-           (codepoint >= L'а' && codepoint <= L'я');
+           (codepoint >= L'а' && codepoint <= L'я') || codepoint == L'ё';
 }
 
 void process_utf8(struct State* state, unsigned char byte) {

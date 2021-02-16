@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <byteswap.h>
 
@@ -18,7 +19,7 @@ struct Node {
 };
 
 
-void write_be(void* buf, uint32_t i) {
+void write_be(char* buf, uint32_t i) {
     buf[0] = (i >> 24) & 0xff;
     buf[1] = (i >> 16) & 0xff;
     buf[2] = (i >> 8) & 0xff;
@@ -33,6 +34,16 @@ void bswap_node(struct Node* node) {
     node->len = bswap_32(node->len);
 }
 
+union endianness {
+    uint32_t integer;
+    char bytes[4];
+};
+
+int is_little_endian() {
+    union endianness e;
+    e.integer = 1;
+    return e.bytes[0] == 1;
+}
 
 void write_or_die(int fd, void* buf, size_t count) {
     if (write(fd, buf, count) != count) {
@@ -49,6 +60,7 @@ void append_or_die(int fd, struct Node* node, char* string) {
 
 
 int main(int argc, char* argv[]) {
+    printf("little endian: %d\n", is_little_endian());
     if (argc != 3) {
         fprintf(stderr, "Usage: tree compile|retrieve FILE\n");
         return 1;

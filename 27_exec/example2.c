@@ -10,7 +10,7 @@ int mysys(const char *command) {
         return -1;
     } else if (!proc_pid) {
         execl("/bin/sh", "sh", "-c", command, (char *) NULL);
-        exit(127);
+        _exit(127);
     } else {
         int status;
         if (waitpid(proc_pid, &status, 0) == -1) {

@@ -21,7 +21,7 @@ void myexit(int status) {
 
 int myread(int fd, char* buf, int size) {
     int result;
-    asm("mov $3, %%eax \n"
+    asm("mov %[callnr], %%eax \n"
         "mov %[fd], %%ebx \n"
         "mov %[buf], %%ecx \n"
         "mov %[size], %%edx \n"
@@ -30,9 +30,12 @@ int myread(int fd, char* buf, int size) {
         :
         [result] "=m" (result)
         :
-        [fd] "m" (fd),
-        [buf] "m" (buf),
-        [size] "m" (size)
+        [callnr] "ri" (__NR_read),
+        [fd] "rm" (fd),
+        [buf] "rm" (buf),
+        [size] "rm" (size)
+        :
+        "%eax", "%ebx", "%ecx", "%edx", "memory"
         );
     return result;
 }

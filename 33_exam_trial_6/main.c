@@ -7,15 +7,23 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-enum {ELF = 1179403647}; //Probably can cause problems if integer is stored in BigEndain/LittleEndian
+const char ELFmagic[5] = "\x7f""ELF";
 
 int check_elf (char* name) {
     int fd = open(name, O_RDONLY);
+    if (fd < 0)
+        return 0;
     uint32_t desk;
-    read(fd, &desk, sizeof(desk));
-    if (desk == ELF) {
+    char header[4];
+    if (read(fd, header, sizeof(header)) != 4){
+        close(fd);
+        return 0;
+    }
+    if (memcmp(header, ELFmagic, 4) == 0) {
+        close(fd);
         return 1;
     }
+    close(fd);
     return 0;
 }
 
@@ -36,11 +44,10 @@ int main(int argc, char *argv[]) {
             struct stat st;
             char* full_name = (char*) malloc(strlen(dir_path) + strlen(d->d_name) + 2);
             sprintf(full_name, "%s/%s", dir_path, d->d_name);
-            stat(full_name, &st);
-            if ((S_ISREG(st.st_mode) || S_ISLNK(st.st_mode)) && check_elf(full_name)) {
-                count += 1;
-                //printf("%s\n", d->d_name);
-            }
+            if (stat(full_name, &st) == 0) 
+                if (S_ISREG(st.st_mode) && check_elf(full_name)) {
+                    count += 1;
+                }
             free(full_name);
         }
     }
